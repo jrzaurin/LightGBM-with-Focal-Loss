@@ -30,14 +30,14 @@ if __name__ == '__main__':
 	crossed_cols = (['education', 'occupation'], ['native_country', 'occupation'])
 
 	preprocessor = FeatureTools()
-	databunch = preprocessor(adult_df, target_col='target', scale_cols=scale_cols,
+	adult_databunch = preprocessor(adult_df, target_col='target', scale_cols=scale_cols,
 		scaler=MinMaxScaler(), categorical_cols=categorical_cols, x_cols=crossed_cols)
-	pickle.dump(databunch, open(PATH/'adult_databunch.p', "wb"))
+	pickle.dump(adult_databunch, open(PATH/'adult_databunch.p', "wb"))
 
 	credit_df = pd.read_csv(PATH/'creditcard.csv.zip')
 	scale_cols = ['Time', 'Amount']
 	preprocessor = FeatureTools()
-	databunch = preprocessor(credit_df, target_col='Class', scale_cols=scale_cols,
+	credit_databunch = preprocessor(credit_df, target_col='Class', scale_cols=scale_cols,
 		scaler=MinMaxScaler())
-	pickle.dump(databunch, open(PATH/'credit_databunch.p', "wb"))
+	pickle.dump(credit_databunch, open(PATH/'credit_databunch.p', "wb"))
 

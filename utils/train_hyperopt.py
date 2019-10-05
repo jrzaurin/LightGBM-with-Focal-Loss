@@ -9,6 +9,7 @@ from .metrics import (focal_loss_lgb, focal_loss_lgb_eval_error, lgb_f1_score,
 	lgb_focal_f1_score, sigmoid)
 from sklearn.metrics import (accuracy_score, f1_score, precision_score,
 	recall_score, confusion_matrix)
+from sklearn.utils import Bunch
 from hyperopt import hp, tpe, fmin, Trials
 
 import pdb
@@ -25,12 +26,15 @@ class LGBOptimizer(object):
 		eval_set: List
 			List with the training dataset
 	"""
-	def __init__(self, train_set, eval_set, colnames, categorical_columns=None,
-		out_dir=Path('data'),  with_focal_loss=False, save=False):
+	def __init__(self, dataname, train_set, eval_set, colnames,
+		categorical_columns=None, out_dir=Path('data'), is_unbalance=False,
+		with_focal_loss=False, save=False):
 
 		self.PATH = out_dir
-		self.save = save
+		self.dataname = dataname
+		self.is_unbalance = is_unbalance
 		self.with_focal_loss = with_focal_loss
+		self.save = save
 
 		self.early_stop_dict = {}
 
@@ -72,22 +76,29 @@ class LGBOptimizer(object):
 			model = lgb.train(best, self.lgtrain)
 			preds = model.predict(self.lgvalid.data)
 			preds = (preds > 0.5).astype('int')
+
+		acc  = accuracy_score(self.y_val, preds)
+		f1   = f1_score(self.y_val, preds)
+		prec = precision_score(self.y_val, preds)
+		rec  = recall_score(self.y_val, preds)
+		cm   = confusion_matrix(self.y_val, preds)
+
 		print('acc: {:.4f}, f1 score: {:.4f}, precision: {:.4f}, recall: {:.4f}'.format(
-			accuracy_score(self.y_val, preds), f1_score(self.y_val, preds),
-			precision_score(self.y_val, preds), recall_score(self.y_val, preds)))
+			acc, f1, prec, rec))
 		print('confusion_matrix')
-		print(confusion_matrix(self.y_val, preds))
+		print(cm)
 
 		if self.save:
+			results = Bunch(acc=acc, f1=f1, prec=prec, rec=rec, cm=cm)
+			out_fname = 'results_'+self.dataname
+			if self.is_unbalance:
+				out_fname += '_unb'
 			if self.with_focal_loss:
-				model_fname = 'model_fl.p'
-				param_fname = 'best_params_fl.p'
-			else:
-				model_fname = 'model.p'
-				param_fname = 'best_params.p'
-
-			pickle.dump(model, open(self.PATH/model_fname, 'wb'))
-			pickle.dump(best, open(self.PATH/param_fname, 'wb'))
+				out_fname += '_fl'
+			out_fname += '.p'
+			results.model = model
+			results.best_params = best
+			pickle.dump(results, open(self.PATH/out_fname, 'wb'))
 
 		self.best = best
 		self.model = model
@@ -103,7 +114,8 @@ class LGBOptimizer(object):
 			params['num_leaves'] = int(params['num_leaves'])
 
 			# need to be passed as parameter
-			params['is_unbalance'] = True
+			if self.is_unbalance:
+				params['is_unbalance'] = True
 			params['verbose'] = -1
 			params['seed'] = 1
 

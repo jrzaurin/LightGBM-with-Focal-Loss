@@ -3,17 +3,6 @@ An implementation of the focal loss to be used with LightGBM
 
 ```python
 def focal_loss_lgb(y_pred, dtrain, alpha, gamma):
-	"""
-	Focal Loss for lightgbm
-
-	Parameters:
-	-----------
-	y_true: numpy.ndarray
-		array with the true labels
-	dtrain: lightgbm.Dataset
-	alpha, gamma: float
-		See original paper https://arxiv.org/pdf/1708.02002.pdf
-	"""
 	a,g = alpha, gamma
 	y_true = dtrain.label
 	def fl(x,t):

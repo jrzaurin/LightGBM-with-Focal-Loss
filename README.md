@@ -1,5 +1,7 @@
 # LightGBM-with-Focal-Loss
-An implementation of the focal loss to be used with LightGBM
+An implementation of the focal loss to be used with LightGBM.
+
+In the making...
 
 ```python
 def focal_loss_lgb(y_pred, dtrain, alpha, gamma):

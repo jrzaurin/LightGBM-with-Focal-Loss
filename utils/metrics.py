@@ -47,8 +47,8 @@ def focal_loss_lgb(y_pred, dtrain, alpha, gamma):
 
 	Parameters:
 	-----------
-	y_true: numpy.ndarray
-		array with the true labels
+	y_pred: numpy.ndarray
+		array with the predictions
 	dtrain: lightgbm.Dataset
 	alpha, gamma: float
 		See original paper https://arxiv.org/pdf/1708.02002.pdf
@@ -70,8 +70,8 @@ def focal_loss_lgb_eval_error(y_pred, dtrain, alpha, gamma):
 
 	Parameters:
 	-----------
-	y_true: numpy.ndarray
-		array with the true labels
+	y_pred: numpy.ndarray
+		array with the predictions
 	dtrain: lightgbm.Dataset
 	alpha, gamma: float
 		See original paper https://arxiv.org/pdf/1708.02002.pdf
@@ -89,8 +89,8 @@ def lgb_f1_score(preds, lgbDataset):
 
 	Parameters:
 	-----------
-	y_true: numpy.ndarray
-		array with the true labels
+	preds: numpy.ndarray
+		array with the predictions
 	lgbDataset: lightgbm.Dataset
 	"""
 	binary_preds = [int(p>0.5) for p in preds]
@@ -107,8 +107,8 @@ def lgb_focal_f1_score(preds, lgbDataset):
 
 	Parameters:
 	-----------
-	y_true: numpy.ndarray
-		array with the true labels
+	preds: numpy.ndarray
+		array with the predictions
 	lgbDataset: lightgbm.Dataset
 	"""
 	preds = sigmoid(preds)

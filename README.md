@@ -44,10 +44,7 @@ params  = {'learning_rate':0.1, 'num_boost_round':10}
 model = lgb.train(params, lgbtrain, valid_sets=[lgbeval], fobj=focal_loss, feval=eval_error )
 ```
 
-In the `examples` directory you will find more details, including how to use [Hyperopt](https://github.com/hyperopt/hyperopt) in combination with LightGBM and the Focal Loss.
-
-**Note**:  This is an implementation for binary classification. In the future I intend to
-include the multi-class version
+In the `examples` directory you will find more details, including how to use [Hyperopt](https://github.com/hyperopt/hyperopt) in combination with LightGBM and the Focal Loss, or how to adapt the Focal Loss to a multi-class classification problem.
 
 Any comment: jrzaurin@gmail.com
 
